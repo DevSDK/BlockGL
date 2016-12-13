@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL Editor</title>
+
+</head>
+
+<body onload="start()">
+<div id = "main">
+  <div id = "LeftSide">
+    <canvas id="glcanvas" width="640" height="480"> Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.</canvas>
+    <div id = "Info">
+
+    </div>
+  </div>
+  <div id = "blocklyArea">
+    <div id="blocklyDiv" style="position: absolute"></div>
+    
+<xml id="toolbox" style="display: none;" >
+  <category name="Logic" colour="210">
+  	
+  	  <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
+      <block type="logic_ternary"></block>
+  	
+  </category>
+  <category name="Loops" colour="120">
+  	
+  	      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <value name="BY">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+  	
+  </category>
+  <category name="Math" colour="230">...</category>
+  <category name="Colour" colour="20">...</category>
+  <category name="Variables" colour="330" custom="VARIABLE"></category>
+  <category name="Functions" colour="290" custom="PROCEDURE"></category>
+</xml>
+         
+  </div>
+</div>
+
+<script src="../../blockly/blockly_compressed.js"></script>
+<script src="../../blockly/blocks_compressed.js"></script>
+<script src="../../blockly/javascript_compressed.js"></script>
+<link rel="stylesheet" href="style.css">
+<script src="WebGL.js"></script>
+<script src="msg/en.js"></script>
+<script src="../../blockly/msg/js/en.js"></script>
+<script src="BlockCode.js"></script>
+</body>
+</html>
