@@ -67,6 +67,7 @@ function resetWebGLCanvas()
 	const container = canvas_old.parentNode;
 	container.removeChild(canvas_old);
 	const canvas_new = document.createElement("CANVAS");
+	canvas_new.setAttribute("id", "glcanvas");
 	canvas_new.setAttribute("width", "640");
 	canvas_new.setAttribute("height", "480");
 	container.appendChild(canvas_new);
@@ -117,9 +118,9 @@ window.addEventListener("load", _ => {
 //////////////////////////////////////////////////
 //////////////////// Block settings
 
-// Render ºí·°, Start ºí·° µû·Î ¸¸µé¾î¾ß ÇÔ
-// (Start ºí·° ³»¿ëÀº Render ºí·° ³»¿ë°ú ´Ş¸® ¹İº¹ÀûÀ¸·Î ¼öÇàµÇ¸é ¾È µÇ±â ¶§¹®).
-// ÇöÀç´Â ¸ğµç ºí·° ³»¿ëÀÌ Render ºí·° ³»¿¡ ÀÖ´Ù°í °¡Á¤ÇÔ.
+// Render ë¸”ëŸ­, Start ë¸”ëŸ­ ë”°ë¡œ ë§Œë“¤ì–´ì•¼ í•¨
+// (Start ë¸”ëŸ­ ë‚´ìš©ì€ Render ë¸”ëŸ­ ë‚´ìš©ê³¼ ë‹¬ë¦¬ ë°˜ë³µì ìœ¼ë¡œ ìˆ˜í–‰ë˜ë©´ ì•ˆ ë˜ê¸° ë•Œë¬¸).
+// í˜„ì¬ëŠ” ëª¨ë“  ë¸”ëŸ­ ë‚´ìš©ì´ Render ë¸”ëŸ­ ë‚´ì— ìˆë‹¤ê³  ê°€ì •í•¨.
 
 Blockly.BlockSvg.START_HAT = true;
 [ // blocks
@@ -238,7 +239,7 @@ Object.assign(Blockly.JavaScript, {
 
 			return `${variable_gl_program} = gl.createProgram();\n`;
 		},
-		"set_clear_color": function(block) { //////////////////////////////// ALPHA ¹İ¿µÇØ¾ß ÇÔ
+		"set_clear_color": function(block) { //////////////////////////////// ALPHA ë°˜ì˜í•´ì•¼ í•¨
 			const colour_clear_color = block.getFieldValue("clear_color"); // #xxxxxx
 			const number_alpha = block.getFieldValue("alpha");
 
