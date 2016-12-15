@@ -1,7 +1,7 @@
 "use strict";
 
-let Code = {};
-Code.workspace = Blockly.inject("blocklyDiv", {
+const BlockGL = {};
+BlockGL.workspace = Blockly.inject("blocklyDiv", {
 		media: "../../media/",
 		toolbox: document.getElementById("toolbox"),
 		grid: {
@@ -17,33 +17,111 @@ Code.workspace = Blockly.inject("blocklyDiv", {
 			}
 	});
 
-Code.blocklyArea = document.getElementById("blocklyArea");
-Code.blocklyDiv = document.getElementById("blocklyDiv");
-Code.onresize = function() {
-		let element = Code.blocklyArea;
+BlockGL.blocklyArea = document.getElementById("blocklyArea");
+BlockGL.blocklyDiv = document.getElementById("blocklyDiv");
+BlockGL.onresize = _ => {
+		let element = BlockGL.blocklyArea;
 		let x = 0;
 		let y = 0;
-		do {
+		do
+		{
 			x += element.offsetLeft;
 			y += element.offsetTop;
 			element = element.offsetParent;
 		} while(element);
-		Code.blocklyDiv.style.left = x + 'px';
-		Code.blocklyDiv.style.top = y + 'px';
-		Code.blocklyDiv.style.width = Code.blocklyArea.offsetWidth + 'px';
-		Code.blocklyDiv.style.height = Code.blocklyArea.offsetHeight + 'px';
-		Blockly.svgResize(Code.workspace);
+		BlockGL.blocklyDiv.style.left = x + "px";
+		BlockGL.blocklyDiv.style.top = y + "px";
+		BlockGL.blocklyDiv.style.width = BlockGL.blocklyArea.offsetWidth + "px";
+		BlockGL.blocklyDiv.style.height = BlockGL.blocklyArea.offsetHeight + "px";
+		Blockly.svgResize(BlockGL.workspace);
 	};
-window.addEventListener("resize", Code.onresize, false);
-Code.onresize();
+window.addEventListener("resize", BlockGL.onresize);
+BlockGL.onresize();
 
-
-
-Code.workspace.addChangeListener(event => {
-		document.getElementById("Info").textContent
-		= Blockly.JavaScript.workspaceToCode(Code.workspace);
+BlockGL.workspace.addChangeListener(event => {
+		let resultCode = Blockly.JavaScript.workspaceToCode(BlockGL.workspace);
+		document.getElementById("Info").textContent = resultCode.replace(/\n/mg);
+		BlockGL.render = new Function(`
+				const gl = BlockGL.gl;
+				try
+				{
+					${resultCode}
+				}
+				catch(error)
+				{
+					console.error("An error occurred: ", error);
+				}
+			`);
 	});
 
+
+//////////////////////////////////////////////////
+//////////////////// Rendering
+
+function resetWebGLCanvas()
+{
+	BlockGL.render = _ => _;
+	BlockGL.gl = null;
+
+	const canvas_old = document.getElementById("glcanvas");
+	const container = canvas_old.parentNode;
+	container.removeChild(canvas_old);
+	const canvas_new = document.createElement("CANVAS");
+	canvas_new.setAttribute("width", "640");
+	canvas_new.setAttribute("height", "480");
+	container.appendChild(canvas_new);
+
+	try
+	{
+		BlockGL.gl = canvas_new.getContext("webgl")
+			|| canvas_new.getContext("experimental-webgl");
+	}
+	catch(error) {}
+
+	if(!BlockGL.gl)
+	{
+		alert("Unable to initialize WebGL. Your browser may not support it.");
+		return;
+	}
+
+	BlockGL.gl.createProgram();
+	BlockGL.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	BlockGL.gl.enable(BlockGL.gl.DEPTH_TEST);
+	BlockGL.gl.depthFunc(BlockGL.gl.LEQUAL);
+	BlockGL.gl.clear(BlockGL.gl.COLOR_BUFFER_BIT | BlockGL.gl.DEPTH_BUFFER_BIT);
+}
+
+BlockGL.renderingTimestamps = [];
+BlockGL.timestampQueueCapacity = 100;
+function renderingLoop(timestamp)
+{
+	BlockGL.renderingTimestamps.push(timestamp);
+	if(BlockGL.renderingTimestamps.length > BlockGL.timestampQueueCapacity)
+	{
+		BlockGL.renderingTimestamps.shift();
+		BlockGL.fps = BlockGL.timestampQueueCapacity
+			/ ((BlockGL.renderingTimestamps[BlockGL.timestampQueueCapacity - 1]
+				- BlockGL.renderingTimestamps[0]) / 1000);
+		console.info("RENDER -- FPS: ", BlockGL.fps);
+	}
+
+	BlockGL.render();
+	window.requestAnimationFrame(renderingLoop);
+}
+
+window.addEventListener("load", _ => {
+		resetWebGLCanvas();
+		window.requestAnimationFrame(renderingLoop);
+	});
+
+//////////////////////////////////////////////////
+//////////////////// Block settings
+
+// Render 블럭, Start 블럭 따로 만들어야 함
+// (Start 블럭 내용은 Render 블럭 내용과 달리 반복적으로 수행되면 안 되기 때문).
+// 현재는 모든 블럭 내용이 Render 블럭 내에 있다고 가정함.
+
+Blockly.BlockSvg.START_HAT = true;
 [ // blocks
 	{
 		"type": "create_program",
