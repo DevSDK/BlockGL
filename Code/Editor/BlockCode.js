@@ -164,6 +164,64 @@ Blockly.BlockSvg.START_HAT = true;
 		"colour": 0,
 		"tooltip": "",
 		"helpUrl": "http://www.example.com/"
+	},
+	{
+		"type": "enable",
+		"message0": "Enable capability %1",
+		"args0": [
+			{
+				"type": "field_dropdown",
+				"name": "capability",
+				"options": [
+					["DEPTH_TEST", "DEPTH_TEST"]
+				]
+			}
+		],
+		"previousStatement": null,
+		"nextStatement": null,
+		"colour": 0,
+		"tooltip": "",
+		"helpUrl": "http://www.example.com/"
+	},
+	{
+		"type": "set_depth_function",
+		"message0": "Use %1 for depth buffer comparisons",
+		"args0": [
+			{
+				"type": "field_dropdown",
+				"name": "depth_function",
+				"options": [
+					["NEVER", "NEVER"],
+					["LEQUAL", "LEQUAL"]
+				]
+			}
+		],
+		"previousStatement": null,
+		"nextStatement": null,
+		"colour": 0,
+		"tooltip": "",
+		"helpUrl": "http://www.example.com/"
+	},
+	{
+		"type": "clear_buffer",
+		"message0": "Clear the %1 buffer",
+		"args0": [
+			{
+				"type": "field_dropdown",
+				"name": "buffer",
+				"options": [
+					["color","COLOR_BUFFER_BIT"],
+					["depth","DEPTH_BUFFER_BIT"],
+					["accumulation","ACCUM_BUFFER_BIT"],
+					["stencil", "STENCIL_BUFFER_BIT"]
+				]
+			}
+		],
+		"previousStatement": null,
+		"nextStatement": null,
+		"colour": 0,
+		"tooltip": "",
+		"helpUrl": "http://www.example.com/"
 	}
 ].forEach(blockInfo => {
 		Blockly.Blocks[blockInfo.type] = {init: function() {
@@ -180,10 +238,25 @@ Object.assign(Blockly.JavaScript, {
 
 			return `${variable_gl_program} = gl.createProgram();\n`;
 		},
-		"set_clear_color": function(block) {
+		"set_clear_color": function(block) { //////////////////////////////// ALPHA 반영해야 함
 			const colour_clear_color = block.getFieldValue("clear_color"); // #xxxxxx
 			const number_alpha = block.getFieldValue("alpha");
 
 			return `gl.clearColor(${hexColorCodeToFloatVector(colour_clear_color).join(", ")}, ${number_alpha});\n`;
+		},
+		"enable": function(block) {
+			const dropdown_capability = block.getFieldValue("capability");
+
+			return `gl.enable(gl.${dropdown_capability});\n`;
+		},
+		"set_depth_function": function(block) {
+			const dropdown_depth_function = block.getFieldValue("depth_function");
+
+			return `gl.depthFunc(gl.${dropdown_depth_function});\n`;
+		},
+		"clear_buffer": function(block) {
+			const dropdown_buffer = block.getFieldValue('buffer');
+
+			return `gl.clear(gl.${dropdown_buffer});\n`;
 		}
 	});
