@@ -1,5 +1,7 @@
 "use strict";
 
+const infoDiv = document.getElementById("info");
+
 const BlockGL = {};
 BlockGL.workspace = Blockly.inject("blocklyDiv", {
 		media: "../../media/",
@@ -17,6 +19,7 @@ BlockGL.workspace = Blockly.inject("blocklyDiv", {
 			}
 	});
 
+Blockly.WorkspaceSvg.prototype.preloadAudio_ = _ => _;
 BlockGL.blocklyArea = document.getElementById("blocklyArea");
 BlockGL.blocklyDiv = document.getElementById("blocklyDiv");
 BlockGL.onresize = _ => {
@@ -38,20 +41,25 @@ BlockGL.onresize = _ => {
 window.addEventListener("resize", BlockGL.onresize);
 BlockGL.onresize();
 
+let initialized = false;
 BlockGL.workspace.addChangeListener(event => {
 		let resultCode = Blockly.JavaScript.workspaceToCode(BlockGL.workspace);
-		document.getElementById("Info").textContent = resultCode.replace(/\n/mg);
-		BlockGL.render = new Function(`
-				const gl = BlockGL.gl;
-				try
-				{
-					${resultCode}
-				}
-				catch(error)
-				{
-					console.error("An error occurred: ", error);
-				}
-			`);
+		infoDiv.innerHTML = resultCode.replace(/\n/mg, "<br>\n");
+		resetWebGLCanvas();
+		(new Function(`
+			const gl = BlockGL.gl;
+			try
+			{
+				${resultCode}
+
+				initialize();
+				BlockGL.render = render;
+			}
+			catch(error)
+			{
+				console.error("An error occurred: ", error);
+			}
+		`))();
 	});
 
 
@@ -63,21 +71,25 @@ function resetWebGLCanvas()
 	BlockGL.render = _ => _;
 	BlockGL.gl = null;
 
-	const canvas_old = document.getElementById("glcanvas");
+	const canvas_old = document.getElementById("glCanvas");
 	const container = canvas_old.parentNode;
 	container.removeChild(canvas_old);
 	const canvas_new = document.createElement("CANVAS");
 	canvas_new.setAttribute("id", "glcanvas");
 	canvas_new.setAttribute("width", "640");
 	canvas_new.setAttribute("height", "480");
-	container.appendChild(canvas_new);
+	canvas_new.setAttribute("id", "glCanvas");
+	container.insertBefore(canvas_new, infoDiv);
 
 	try
 	{
 		BlockGL.gl = canvas_new.getContext("webgl")
 			|| canvas_new.getContext("experimental-webgl");
 	}
-	catch(error) {}
+	catch(error)
+	{
+		console.error("getContext failed: ", error);
+	}
 
 	if(!BlockGL.gl)
 	{
@@ -85,25 +97,26 @@ function resetWebGLCanvas()
 		return;
 	}
 
-	BlockGL.gl.createProgram();
-	BlockGL.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	BlockGL.gl.enable(BlockGL.gl.DEPTH_TEST);
-	BlockGL.gl.depthFunc(BlockGL.gl.LEQUAL);
-	BlockGL.gl.clear(BlockGL.gl.COLOR_BUFFER_BIT | BlockGL.gl.DEPTH_BUFFER_BIT);
+	console.info("reset");
 }
 
 BlockGL.renderingTimestamps = [];
 BlockGL.timestampQueueCapacity = 100;
+Object.defineProperty(BlockGL, "fps", {
+		get: function() {
+			return this.timestampQueueCapacity
+				/ ((
+					this.renderingTimestamps[this.timestampQueueCapacity - 1]
+					- this.renderingTimestamps[0]
+				) / 1000);
+		}
+	});
 function renderingLoop(timestamp)
 {
 	BlockGL.renderingTimestamps.push(timestamp);
 	if(BlockGL.renderingTimestamps.length > BlockGL.timestampQueueCapacity)
 	{
 		BlockGL.renderingTimestamps.shift();
-		BlockGL.fps = BlockGL.timestampQueueCapacity
-			/ ((BlockGL.renderingTimestamps[BlockGL.timestampQueueCapacity - 1]
-				- BlockGL.renderingTimestamps[0]) / 1000);
-		console.info("RENDER -- FPS: ", BlockGL.fps);
 	}
 
 	BlockGL.render();
@@ -113,6 +126,32 @@ function renderingLoop(timestamp)
 window.addEventListener("load", _ => {
 		resetWebGLCanvas();
 		window.requestAnimationFrame(renderingLoop);
+
+		Blockly.Xml.domToWorkspace(
+			Blockly.Xml.textToDom(`
+				<xml>
+					<block type="procedures_defnoreturn" x="50" y="100">
+						<field name="NAME">initialize</field>
+						<comment pinned="false" h="50" w="200">To initialize the stuff</comment>
+					</block>
+					<block type="procedures_defnoreturn" x="250" y="100">
+						<field name="NAME">render</field>
+						<comment pinned="false" h="50" w="200">A callback for the rendering loop</comment>
+						<statement name="STACK">
+							<block type="set_clear_color" x="50" y="50">
+								<field name="clear_color">#ffcc00</field>
+								<field name="alpha">1</field>
+								<next>
+									<block type="clear_buffer">
+										<field name="buffer">COLOR_BUFFER_BIT</field>
+									</block>
+								</next>
+							</block>
+						</statement>
+					</block>
+				</xml>`),
+			BlockGL.workspace
+		);
 	});
 
 //////////////////////////////////////////////////

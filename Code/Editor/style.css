@@ -31,3 +31,11 @@ html, body
 	height: 100%;
 	display: flex;
 }
+
+#info
+{
+	padding: 10px;
+	color: white;
+	font-family: monospace;
+	font-size: 1.5em;
+}
