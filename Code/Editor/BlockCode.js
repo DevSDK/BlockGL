@@ -1,6 +1,7 @@
 ﻿"use strict";
 
-const infoDiv = document.getElementById("info");
+const infoDiv = document.querySelector("#info");
+const codeOut = document.querySelector("#info code");
 
 const BlockGL = {};
 BlockGL.workspace = Blockly.inject("blocklyDiv", {
@@ -44,7 +45,7 @@ BlockGL.onresize();
 let initialized = false;
 BlockGL.workspace.addChangeListener(event => {
 		let resultCode = Blockly.JavaScript.workspaceToCode(BlockGL.workspace);
-		infoDiv.innerHTML = resultCode.replace(/\n/mg, "<br>\n");
+		codeOut.textContent = resultCode;
 		resetWebGLCanvas();
 		(new Function(`
 			const gl = BlockGL.gl;
@@ -129,7 +130,7 @@ window.addEventListener("load", _ => {
 
 		Blockly.Xml.domToWorkspace(
 			Blockly.Xml.textToDom(`
-<xml><block type="procedures_defnoreturn" x="20" y="100"><field name="NAME">initialize</field><comment pinned="false" h="50" w="200">To initialize the stuff</comment></block><block type="procedures_defnoreturn" x="220" y="260"><field name="NAME">render</field><comment pinned="false" h="50" w="200">A callback for the rendering loop</comment><statement name="STACK"><block type="set_clear_color"><field name="clear_color">#ffcc00</field><field name="alpha">1</field><next><block type="clear_buffer"><field name="buffer">COLOR_BUFFER_BIT</field><next><block type="create_buffer"><value name="buffer_variable"><block type="variables_get"><field name="VAR">vertex_buffer</field></block></value><next><block type="bind_buffer"><field name="buffer">vertex_buffer</field><field name="target">ARRAY_BUFFER</field><next><block type="buffer_data"><field name="target">ARRAY_BUFFER</field><field name="array_type">Float32Array</field><field name="usage">STATIC_DRAW</field><statement name="data"><block type="vertex"><field name="x">-0.5</field><field name="y">0.5</field><field name="z">0</field><next><block type="vertex"><field name="x">-0.5</field><field name="y">-0.5</field><field name="z">0</field><next><block type="vertex"><field name="x">0.5</field><field name="y">-0.5</field><field name="z">0</field></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></statement></block></xml>
+<xml><block type="procedures_defnoreturn" x="-500" y="-300"><field name="NAME">initialize</field><comment pinned="false" h="50" w="200">To initialize the stuff</comment><statement name="STACK"><block type="set_clear_color"><field name="clear_color">#ffcc00</field><field name="alpha">1</field><next><block type="clear_buffer"><field name="buffer">COLOR_BUFFER_BIT</field><next><block type="create_buffer"><value name="buffer_variable"><block type="variables_get"><field name="VAR">vertex buffer</field></block></value><next><block type="bind_buffer"><field name="buffer">vertex buffer</field><field name="target">ARRAY_BUFFER</field><next><block type="buffer_data"><field name="target">ARRAY_BUFFER</field><field name="array_type">Float32Array</field><field name="usage">STATIC_DRAW</field><statement name="data"><block type="vertex"><field name="x">-0.5</field><field name="y">0.5</field><field name="z">0</field><next><block type="vertex"><field name="x">-0.5</field><field name="y">-0.5</field><field name="z">0</field><next><block type="vertex"><field name="x">0.5</field><field name="y">-0.5</field><field name="z">0</field></block></next></block></next></block></statement><next><block type="unbind_buffer"><field name="target">ARRAY_BUFFER</field><next><block type="create_buffer"><value name="buffer_variable"><block type="variables_get"><field name="VAR">index buffer</field></block></value><next><block type="bind_buffer"><field name="buffer">index buffer</field><field name="target">ELEMENT_ARRAY_BUFFER</field><next><block type="buffer_data"><field name="target">ELEMENT_ARRAY_BUFFER</field><field name="array_type">Uint16Array</field><field name="usage">STATIC_DRAW</field><statement name="data"><block type="vertex"><field name="x">0</field><field name="y">1</field><field name="z">2</field></block></statement><next><block type="unbind_buffer"><field name="target">ELEMENT_ARRAY_BUFFER</field><next><block type="create_shader"><field name="type">VERTEX_SHADER</field><field name="shader">vertex shader</field><statement name="source"><block type="glsl_declare_variable"><field name="qualifier">attribute</field><field name="type">vec3</field><field name="variable_name">coordinates</field><next><block type="glsl_void_main"><statement name="function_body"><block type="glsl_assign"><field name="variable_name">gl_Position</field><value name="value"><block type="glsl_vector"><field name="type">vec4</field><field name="values">coordinates, 1.0</field></block></value></block></statement></block></next></block></statement><next><block type="create_shader"><field name="type">FRAGMENT_SHADER</field><field name="shader">fragment shader</field><statement name="source"><block type="glsl_void_main"><statement name="function_body"><block type="glsl_assign"><field name="variable_name">gl_FragColor</field><value name="value"><block type="glsl_vector"><field name="type">vec4</field><field name="values">0.0, 0.0, 0.0, 0.1</field></block></value></block></statement></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></statement></block><block type="procedures_defnoreturn" x="-300" y="-300"><field name="NAME">render</field><comment pinned="false" h="50" w="200">A callback for the rendering loop</comment></block></xml>
 `),
 			BlockGL.workspace
 		);
@@ -314,6 +315,55 @@ Blockly.BlockSvg.START_HAT = true;
   "helpUrl": "http://www.example.com/"
 },
 {
+  "type": "unbind_buffer",
+  "message0": "Unbind %1",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "target",
+      "options": [
+        [
+          "ARRAY_BUFFER",
+          "ARRAY_BUFFER"
+        ],
+        [
+          "ELEMENT_ARRAY_BUFFER",
+          "ELEMENT_ARRAY_BUFFER"
+        ],
+        [
+          "COPY_READ_BUFFER",
+          "COPY_READ_BUFFER"
+        ],
+        [
+          "COPY_WRITE_BUFFER",
+          "COPY_WRITE_BUFFER"
+        ],
+        [
+          "TRANSFORM_FEEDBACK_BUFFER",
+          "TRANSFORM_FEEDBACK_BUFFER"
+        ],
+        [
+          "UNIFORM_BUFFER",
+          "UNIFORM_BUFFER"
+        ],
+        [
+          "PIXEL_PACK_BUFFER",
+          "PIXEL_PACK_BUFFER"
+        ],
+        [
+          "PIXEL_UNPACK_BUFFER",
+          "PIXEL_UNPACK_BUFFER"
+        ]
+      ]
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
   "type": "buffer_data",
   "message0": "Initialize %1 with %2 %3 %4 for %5",
   "args0": [
@@ -450,6 +500,572 @@ Blockly.BlockSvg.START_HAT = true;
   "colour": 0,
   "tooltip": "",
   "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "glsl_declare_variable",
+  "message0": "GLSL: declare %1 %2 %3",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "qualifier",
+      "options": [
+        [
+          "attribute",
+          "attribute"
+        ],
+        [
+          "uniform",
+          "uniform"
+        ],
+        [
+          "varying",
+          "varying"
+        ]
+      ]
+    },
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "void",
+          "void"
+        ],
+        [
+          "bool",
+          "bool"
+        ],
+        [
+          "int",
+          "int"
+        ],
+        [
+          "float",
+          "float"
+        ],
+        [
+          "vec2",
+          "vec2"
+        ],
+        [
+          "vec3",
+          "vec3"
+        ],
+        [
+          "vec4",
+          "vec4"
+        ],
+        [
+          "bvec2",
+          "bvec2"
+        ],
+        [
+          "bvec3",
+          "bvec3"
+        ],
+        [
+          "bvec4",
+          "bvec4"
+        ],
+        [
+          "ivec2",
+          "ivec2"
+        ],
+        [
+          "ivec3",
+          "ivec3"
+        ],
+        [
+          "ivec4",
+          "ivec4"
+        ],
+        [
+          "mat2",
+          "mat2"
+        ],
+        [
+          "mat3",
+          "mat3"
+        ],
+        [
+          "mat3",
+          "mat3"
+        ],
+        [
+          "sampler2D",
+          "sampler2D"
+        ],
+        [
+          "samplerCube",
+          "samplerCube"
+        ]
+      ]
+    },
+    {
+      "type": "field_input",
+      "name": "variable_name",
+      "text": "VARIABLE NAME"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "glsl_void_main",
+  "message0": "GLSL: void main(void) %1 %2",
+  "args0": [
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_statement",
+      "name": "function_body"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "glsl_vector",
+  "message0": "%1 %2",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "vec2",
+          "vec2"
+        ],
+        [
+          "vec3",
+          "vec3"
+        ],
+        [
+          "vec4",
+          "vec4"
+        ],
+        [
+          "bvec2",
+          "bvec2"
+        ],
+        [
+          "bvec3",
+          "bvec3"
+        ],
+        [
+          "bvec4",
+          "bvec4"
+        ],
+        [
+          "ivec2",
+          "ivec2"
+        ],
+        [
+          "ivec3",
+          "ivec3"
+        ],
+        [
+          "ivec4",
+          "ivec4"
+        ],
+        [
+          "mat2",
+          "mat2"
+        ],
+        [
+          "mat3",
+          "mat3"
+        ],
+        [
+          "mat4",
+          "mat4"
+        ]
+      ]
+    },
+    {
+      "type": "field_input",
+      "name": "values",
+      "text": "COMPONENTS"
+    }
+  ],
+  "output": "vector",
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "glsl_assign",
+  "message0": "Assign %1 to %2",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "value",
+      "check": "vector"
+    },
+    {
+      "type": "field_input",
+      "name": "variable_name",
+      "text": "VARIABLE_NAME"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "create_shader",
+  "message0": "Create a %1 shader %2 %3 from source code %4",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "vertex",
+          "VERTEX_SHADER"
+        ],
+        [
+          "fragment",
+          "FRAGMENT_SHADER"
+        ]
+      ]
+    },
+    {
+      "type": "field_variable",
+      "name": "shader",
+      "variable": "shader"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_statement",
+      "name": "source"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "create_program",
+  "message0": "Create a program %1",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "program",
+      "variable": "PROGRAM"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "attach_shader",
+  "message0": "Attach a shader  %1 to a %2",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "shader",
+      "variable": "SHADER"
+    },
+    {
+      "type": "field_variable",
+      "name": "program",
+      "variable": "PROGRAM"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "link_program",
+  "message0": "Link a program %1",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "program",
+      "variable": "PROGRAM"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "use_program",
+  "message0": "Use a program %1",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "program",
+      "variable": "PROGRAM"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "get_attribute_location",
+  "message0": "Put the location of an attribute variable %1 %2 in a program %3 ,  to %4",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "name",
+      "text": "ATTRIBUTE_VARIABLE_NAME"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_variable",
+      "name": "program",
+      "variable": "PROGRAM"
+    },
+    {
+      "type": "field_variable",
+      "name": "variable",
+      "variable": "VARIABLE"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "vertex_attribute_pointer",
+  "message0": "For a vertex attribute whose index is %1 , %2 specify the number of its components as %3 , %4 the data type of its each component as %5 , %6 the offset in bytes between %7 the beginning of consecutive vertex attributes as %8 , %9 the offset in bytes of the first component as %10 %11 and specify that fixed-point data values %12 %13 %14 when they're accessed",
+  "args0": [
+    {
+      "type": "field_variable",
+      "name": "index",
+      "variable": "INDEX"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "size",
+      "value": 3,
+      "min": 0,
+      "precision": 1
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "byte",
+          "BYTE"
+        ],
+        [
+          "unsigned byte",
+          "UNSIGNED_BYTE"
+        ],
+        [
+          "short",
+          "SHORT"
+        ],
+        [
+          "unsigned short",
+          "UNSIGNED_SHORT"
+        ],
+        [
+          "float",
+          "FLOAT"
+        ]
+      ]
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "stride",
+      "value": 0,
+      "min": 0,
+      "precision": 1
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "offset",
+      "value": 0,
+      "min": 0,
+      "precision": 1
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_dropdown",
+      "name": "normalized",
+      "options": [
+        [
+          "should be normalized",
+          "TRUE"
+        ],
+        [
+          "are to converted to fixed point values",
+          "FALSE"
+        ]
+      ]
+    },
+    {
+      "type": "input_dummy"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "enable_vertex_attribute_array",
+  "message0": "Turn the generic vertex attribute array on %1 at a index position  %2",
+  "args0": [
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "index",
+      "value": 0,
+      "min": 0,
+      "precision": 1
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
+},
+{
+  "type": "draw_elements",
+  "message0": "Render %1 primitives from array data, %2 whose type are %3 %4 and the types of the values %5 of the element array buffer are unsigned %6 %7 and the offset in the element array buffer is %8",
+  "args0": [
+    {
+      "type": "field_number",
+      "name": "count",
+      "value": 1,
+      "min": 0,
+      "precision": 1
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_dropdown",
+      "name": "mode",
+      "options": [
+        [
+          "POINTS",
+          "POINTS"
+        ],
+        [
+          "LINE_STRIP",
+          "LINE_STRIP"
+        ],
+        [
+          "LINE_LOOP",
+          "LINE_LOOP"
+        ],
+        [
+          "LINES",
+          "LINES"
+        ],
+        [
+          "TRIANGLE_STRIP",
+          "TRIANGLE_STRIP"
+        ],
+        [
+          "TRIANGLE_FAN",
+          "TRIANGLE_FAN"
+        ],
+        [
+          "TRIANGLES",
+          "TRIANGLES"
+        ]
+      ]
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "byte",
+          "UNSIGNED_BYTE"
+        ],
+        [
+          "short",
+          "UNSIGNED_SHORT"
+        ],
+        [
+          "int",
+          "UNSIGNED_INT"
+        ]
+      ]
+    },
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "field_number",
+      "name": "offset",
+      "value": 0,
+      "min": 0,
+      "precision": 1
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 0,
+  "tooltip": "",
+  "helpUrl": "http://www.example.com/"
 }
 ].forEach(blockInfo => {
 		Blockly.Blocks[blockInfo.type] = {init: function() {
@@ -459,6 +1075,14 @@ Blockly.BlockSvg.START_HAT = true;
 
 const hexColorCodeToFloatVector = colorHex => colorHex
 	.substr(1).match(/.{2}/g).map(rgbHex => parseInt(rgbHex, 16) / 255);
+const indent = (code, nTab) => code
+	.split('\n')
+	.map(line => '\t'.repeat(nTab) + line)
+	.join('\n');
+const unindent = (code, nBacktab) => code
+	.split('\n')
+	.map(line => line.replace(new RegExp(`^\\t{0,${nBacktab}}`), ""))
+	.join('\n');
 Object.assign(Blockly.JavaScript, {
 		"create_program": function(block) {
 			const variable_gl_program = Blockly.JavaScript.variableDB_
@@ -492,6 +1116,11 @@ Object.assign(Blockly.JavaScript, {
 
 			return `${value_buffer_variable} = gl.createBuffer();\n`;
 		},
+		"unbind_buffer": block => {
+			const dropdown_target = block.getFieldValue("target");
+
+			return `gl.bindBuffer(gl.${dropdown_target}, null);\n`;
+		},
 		"bind_buffer": function(block) {
 			let variable_buffer = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("buffer"), Blockly.Variables.NAME_TYPE);
 			let dropdown_target = block.getFieldValue("target");
@@ -505,14 +1134,105 @@ Object.assign(Blockly.JavaScript, {
 			let dropdown_usage = block.getFieldValue("usage");
 
 			return `gl.bufferData(gl.${dropdown_target}, `
-				+ `new ${dropdown_array_type}([${statements_data}].filter(e => e !== undefined)), `
+				+ `new ${dropdown_array_type}([${statements_data.substring(0, statements_data.length - 2).trim()}]), `
 				+ `gl.${dropdown_usage});\n`;
 		},
 		"vertex": function(block) {
-			var number_x = block.getFieldValue('x');
-			var number_y = block.getFieldValue('y');
-			var number_z = block.getFieldValue('z');
+			const number_x = block.getFieldValue('x');
+			const number_y = block.getFieldValue('y');
+			const number_z = block.getFieldValue('z');
 
 			return `${number_x}, ${number_y}, ${number_z}, `;
+		},
+		"glsl_declare_variable": function(block) {
+			const dropdown_qualifier = block.getFieldValue("qualifier");
+			const dropdown_type = block.getFieldValue("type");
+			const text_variable_name = block.getFieldValue("variable_name");
+
+			return `${dropdown_qualifier} ${dropdown_type} ${text_variable_name};\n`;
+		},
+		"glsl_void_main": function(block) {
+			const statements_function_body = Blockly.JavaScript.statementToCode(block, "function_body");
+
+			return unindent(
+				`void main(void)
+				{
+				  ${statements_function_body.trim()}
+				}
+			`, 4);
+		},
+		"glsl_vector": function(block) {
+			const dropdown_type = block.getFieldValue("type");
+			const text_values = block.getFieldValue("values");
+
+			return [`${dropdown_type}(${text_values})`, Blockly.JavaScript.ORDER_ATOMIC];
+		},
+		"glsl_assign": function(block) {
+			const value_value = Blockly.JavaScript.valueToCode(block, "value", Blockly.JavaScript.ORDER_ATOMIC);
+			const text_variable_name = block.getFieldValue("variable_name");
+
+			return `${text_variable_name} = ${value_value};\n`;
+		},
+		"create_shader": block => {
+			const dropdown_type = block.getFieldValue("type");
+			const variable_shader = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("shader"), Blockly.Variables.NAME_TYPE);
+			const statements_source = Blockly.JavaScript.statementToCode(block, "source");
+
+			return unindent(`
+				let ${variable_shader} = gl.createShader(gl.${dropdown_type});
+				gl.shaderSource(${variable_shader}, \`${statements_source}\`);
+				gl.compileShader(${variable_shader});
+				`, 4);
+		},
+		"create_program": function(block) {
+			const variable_program = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("program"), Blockly.Variables.NAME_TYPE);
+
+			return `${variable_program} = gl.createProgram();\n`;
+		},
+		"attach_shader": function(block) {
+			const variable_shader = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("shader"), Blockly.Variables.NAME_TYPE);
+			const variable_program = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("program"), Blockly.Variables.NAME_TYPE);
+
+			return `gl.attachShader(${variable_program}, ${variable_shader});\n`;
+		},
+		"link_program": function(block) {
+			const variable_program = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("program"), Blockly.Variables.NAME_TYPE);
+
+			return `gl.linkProgram(${variable_program});\n`;
+		},
+		"use_program": function(block) {
+			const variable_program = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("program"), Blockly.Variables.NAME_TYPE);
+
+			return `gl.useProgram(${variable_program});\n`;
+		},
+		"get_attribute_location": function(block) {
+			const text_name = block.getFieldValue("name"); // The attribute variable name
+			const variable_program = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("program"), Blockly.Variables.NAME_TYPE);
+			const variable_variable = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("variable"), Blockly.Variables.NAME_TYPE);
+
+			return `${variable_variable} = gl.getAttribLocation(${variable_program}, \`${text_name}\`);\n`;
+		},
+		"vertex_attribute_pointer": function(block) {
+			const variable_index = Blockly.JavaScript.variableDB_.getName(block.getFieldValue("index"), Blockly.Variables.NAME_TYPE);
+			const number_size = block.getFieldValue("size"); // Must be 1, 2, 3, or 4.
+			const dropdown_type = block.getFieldValue("type");
+			const number_stride = block.getFieldValue("stride");
+			const number_offset = block.getFieldValue("offset");
+			const dropdown_normalized = block.getFieldValue("normalized");
+
+			return `gl.vertexAttribPointer(${variable_index}, ${number_size}, gl.${dropdown_type}, gl.${dropdown_normalized}, ${number_stride}, ${number_offset});\n`;
+		},
+		"enable_vertex_attribute_array": function(block) {
+			const number_index = block.getFieldValue("index");
+
+			return `gl.enableVertexAttribArray(${number_index});\n`;
+		},
+		"draw_elements": function(block) {
+			const dropdown_mode = block.getFieldValue("mode");
+			const number_count = block.getFieldValue("count");
+			const dropdown_type = block.getFieldValue("type");
+			const number_offset = block.getFieldValue("offset");
+
+			return `gl.drawElements(gl.${dropdown_mode}, ${number_count}, gl.${dropdown_type}, ${number_offset});\n`;
 		}
 	});

@@ -15,7 +15,9 @@
 				<canvas id="glCanvas" width="640" height="480">
 					Sorry, BlockGL does not support your browser.
 				</canvas>
-				<div id="info"></div>
+				<div id="info">
+					<pre><code></code></pre>
+				</div>
 			</div>
 			<div id = "blocklyArea">
 				<div id="blocklyDiv"></div>
@@ -64,8 +66,23 @@
 						<block type="clear_buffer"></block>
 						<block type="create_buffer"></block>
 						<block type="bind_buffer"></block>
+						<block type="unbind_buffer"></block>
 						<block type="buffer_data"></block>
 						<block type="vertex"></block>
+
+						<block type="glsl_declare_variable"></block>
+						<block type="glsl_void_main"></block>
+						<block type="glsl_vector"></block>
+						<block type="glsl_assign"></block>
+						<block type="create_shader"></block>
+						<block type="create_program"></block>
+						<block type="attach_shader"></block>
+						<block type="link_program"></block>
+
+						<block type="get_attribute_location"></block>
+						<block type="vertex_attribute_pointer"></block>
+						<block type="enable_vertex_attribute_array"></block>
+						<block type="draw_elements"></block>
 					</category>
 				</xml>
 			</div>
